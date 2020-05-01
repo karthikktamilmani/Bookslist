@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Case Study Data</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+
+
+<h1>Book List</h1>
+ <input type="hidden" id="ip_used" value="54.234.91.148">
+<div style="width:900px;">
+    <select id="filter_dropDown" style="width:100px;height:30px;">
+      <option>Title</option>
+     <option>Author</option>
+    </select>
+
+    <input type="text" style="width: 200px; height:30px;" id="queryString">
+
+    <button style="width: 100px; height:30px;" type="submit" onclick="javascript:getBooks();">Submit</button>
+</div>
+<div style="margin-top:50px;width:900px;">
+    <label>Notes:</label>
+
+    <textarea id="notes" rows="4" cols="50"></textarea>
+
+    <button style="width: 100px; height:30px;display:none;" type="submit" id="notesClick" onclick="javascript:submitNotes();">Submit Notes</button>
+
+</div>
+<div style="margin-top:50px;width:900px;">
+    <table border="1">
+        <thead>
+            <td>Existing Notes</td>
+        </thead>
+        <tbody id="notesBody">
+        </tbody>
+    </table>
+</div>
+<div style="margin-top:50px;width:900px;">
+    <table border="1">
+        <thead>
+            <td>Book</td>
+            <td>Author</td>
+        </thead>
+        <tbody id="tableBody">
+
+        </tbody>
+    </table>
+</div>
+
+</body>
+<script type="text/javascript">
+var hostIP = $("#ip_used").val()+":5001";
+//var hostIP = "localhost:5000";
+function submitNotes()
+{
+    $.get(
+  "http://"+hostIP+"/submitNotes?query="+$("#queryString").val()+"&notes="+$("#notes").val(),
+    function(data){
+        getBooks();
+    }
+    );
+}
+
+function getBooks()
+{
+    $("#tableBody tr").remove();
+    $("#notesBody tr").remove();
+    $("#notes").val("");
+    $("#notesClick").hide();
+  $.get(
+  "http://"+hostIP+"/getBooks?query="+$("#queryString").val()+"&type="+$("#filter_dropDown").val() ,
+    function(data){
+      //
+      var jsonData = data
+
+      jsonData["books"].forEach(function(obj) {
+        var rowObj = $('<tr>');
+        var dataObj = $("<td>",{ "html" : obj.Title });
+        var newObj = $("<td>" , {"html" : obj.Author} );
+        dataObj.appendTo(rowObj);
+        newObj.appendTo(rowObj);
+        rowObj.appendTo($("#tableBody"));
+        $("#notesClick").show();
+       });
+
+       jsonData["notes"].forEach(function(obj){
+        var rowObj = $('<tr>');
+        var dataObj = $("<td>",{ "html" : obj });
+        dataObj.appendTo(rowObj);
+        rowObj.appendTo($("#notesBody"))
+       });
+    }
+  );
+}
+</script>
+</html>

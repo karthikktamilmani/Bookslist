@@ -1,0 +1,31 @@
+version: '3'  # version of compose format 
+
+services:
+  search-service:
+    build: ./searchDir  # path is relative to docker-compose.yml localtion
+    volumes:
+      - ./searchDir:/app # mount point
+    ports:
+            - 5003:5003  # host:container
+  notes-service:
+    build: ./userNotesDir  # path is relative to docker-compose.yml localtion
+    volumes:
+      - ./userNotesDir:/app # mount point
+    ports:
+            - 5004:5004  # host:containe
+  catalogue-service:
+    build: ./catalogueDir  # path is relative to docker-compose.yml localtion
+    volumes:
+      - ./catalogueDir:/app # mount point
+    ports:
+            - 5002:5002  # host:containe
+  main-service:
+    build: ./mainServiceDir  # path is relative to docker-compose.yml localtion
+    volumes:
+      - ./mainServiceDir:/app # mount point
+    ports:
+            - 5001:5001  # host:containe
+    depends_on:
+            - search-service
+            - notes-service
+            - catalogue-service
