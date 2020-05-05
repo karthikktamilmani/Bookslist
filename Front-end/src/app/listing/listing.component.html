@@ -1,0 +1,34 @@
+<div class="row justify-content-center w-100 mt-4">
+
+    <div class="container mb-5">
+        <h2>
+            Books fetched <small>{{ booksList.length }} </small>
+        </h2>
+    </div>
+    <div class="container mt-2" *ngFor="let book of booksList">
+        <h3>
+            {{ book.Title }}
+        </h3>
+        <i>
+          {{ book.Author}}
+        </i>
+        <div class="container mt-2">
+            <h6 *ngFor="let eachNote of notesList[book.Title]"> {{ eachNote }} </h6>
+            <span class="w-100 float-left" (click)="addNotesLink(book);" *ngIf="!book.isAdd">
+              <i class="fas fa-plus"></i> Add Notes
+             </span>
+            <div class="input-group" *ngIf="book.isAdd">
+                <input type="text" placeholder="Enter Notes" #enteredNotes (keyup.enter)="addNotes(enteredNotes.value,book);" aria-label="Enter Notes" aria-describedby="basic-addon1">
+                <div class="input-group-append">
+                    <button class="btn btn-secondary" (click)="addNotes(enteredNotes.value,book);">
+                      <!-- <i class="fa fa-submit"></i> -->
+                      Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
